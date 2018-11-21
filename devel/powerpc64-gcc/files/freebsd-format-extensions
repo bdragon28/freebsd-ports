@@ -2,7 +2,7 @@ Index: gcc/c-family/c-format.c
 ===================================================================
 --- gcc/c-family/c-format.c	(revision 216017)
 +++ gcc/c-family/c-format.c	(working copy)
-@@ -622,6 +622,26 @@
+@@ -658,6 +658,26 @@ static const format_char_info print_char_table[] =
    { NULL,  0, STD_C89, NOLENGTHS, NULL, NULL, NULL }
  };
  
@@ -29,7 +29,7 @@ Index: gcc/c-family/c-format.c
  static const format_char_info asm_fprintf_char_table[] =
  {
    /* C89 conversion specifiers.  */
-@@ -872,6 +892,12 @@
+@@ -942,6 +962,12 @@ static const format_kind_info format_types_orig[] =
      strfmon_flag_specs, strfmon_flag_pairs,
      FMT_FLAG_ARG_CONVERT, 'w', '#', 'p', 0, 'L', 0,
      NULL, NULL
@@ -42,7 +42,7 @@ Index: gcc/c-family/c-format.c
    }
  };
  
-@@ -1426,6 +1452,9 @@
+@@ -1545,6 +1571,9 @@ check_format_arg (void *ctx, tree format_tree,
  
    if (integer_zerop (format_tree))
      {
@@ -52,36 +52,38 @@ Index: gcc/c-family/c-format.c
        /* Skip to first argument to check, so we can see if this format
  	 has any arguments (it shouldn't).  */
        while (arg_num + 1 < info->first_arg_num)
-@@ -1926,6 +1955,14 @@
- 	  while (fli->name != 0
-  		 && strncmp (fli->name, format_chars, strlen (fli->name)))
- 	      fli++;
-+	  /*
-+	   * Make sure FreeBSD's D format char takes preference
-+	   * over new DD length specifier if FreeBSD format
-+	   * extensions are requested.
-+	   */
-+	  if (fli->index == FMT_LEN_D && flag_format_extensions
-+	    && fki->conversion_specs == print_char_table)
-+	  	while (fli->name != 0) fli++;
- 	  if (fli->name != 0)
- 	    {
-  	      format_chars += strlen (fli->name);
-@@ -1993,6 +2030,14 @@
-       while (fci->format_chars != 0
- 	     && strchr (fci->format_chars, format_char) == 0)
- 	  ++fci;
-+      if (fci->format_chars == 0 && flag_format_extensions
-+	  && fki->conversion_specs == print_char_table)
-+	{
-+	  fci = fbsd_print_char_table;
-+	  while (fci->format_chars != 0
-+		 && strchr (fci->format_chars, format_char) == 0)
-+	      ++fci;
-+	}
-       if (fci->format_chars == 0)
- 	{
- 	  if (ISGRAPH (format_char))
+@@ -2367,6 +2396,14 @@ argument_parser::read_any_length_modifier ()
+   while (fli->name != 0
+ 	 && strncmp (fli->name, format_chars, strlen (fli->name)))
+     fli++;
++  /*
++   * Make sure FreeBSD's D format char takes preference
++   * over new DD length specifier if FreeBSD format
++   * extensions are requested.
++   */
++  if (fli->index == FMT_LEN_D && flag_format_extensions
++    && fki->conversion_specs == print_char_table)
++      while (fli->name != 0) fli++;
+   if (fli->name != 0)
+     {
+       format_chars += strlen (fli->name);
+@@ -2439,6 +2476,16 @@ argument_parser::find_format_char_info (char format_ch
+   while (fci->format_chars != 0
+ 	 && strchr (fci->format_chars, format_char) == 0)
+     ++fci;
++
++  if (fci->format_chars == 0 && flag_format_extensions
++    && fki->conversion_specs == print_char_table)
++    {
++      fci = fbsd_print_char_table;
++      while (fci->format_chars != 0
++        && strchr (fci->format_chars, format_char) == 0)
++        ++fci;
++    }
++
+   if (fci->format_chars == 0)
+     {
+       format_warning_at_char (format_string_loc, format_string_cst,
 Index: gcc/c-family/c-format.h
 ===================================================================
 --- gcc/c-family/c-format.h	(revision 216017)

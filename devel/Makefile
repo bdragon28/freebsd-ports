@@ -4211,8 +4211,11 @@
     SUBDIR += popt
     SUBDIR += poslib
     SUBDIR += powerpc64-binutils
+    SUBDIR += powerpc64-binutils-elfv2
     SUBDIR += powerpc64-gcc
+    SUBDIR += powerpc64-gcc-elfv2
     SUBDIR += powerpc64-xtoolchain-gcc
+    SUBDIR += powerpc64-xtoolchain-gcc-elfv2
     SUBDIR += poxml
     SUBDIR += poxml-kde4
     SUBDIR += ppl

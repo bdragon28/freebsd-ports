@@ -1,8 +1,8 @@
 # $FreeBSD$
 
 PORTNAME=	gcc
-PORTVERSION=	6.4.0
-PORTREVISION=	2
+PORTVERSION=	8.2.0
+PORTREVISION=	0
 CATEGORIES=	devel
 MASTER_SITES=	GCC/releases/gcc-${DISTVERSION}
 PKGNAMEPREFIX?=	powerpc64-
@@ -27,8 +27,8 @@ PLIST_SUB=	TARGETARCH=${PKGNAMEPREFIX:C/-//g} \
 
 .if empty(GCC_TARGET)
 # We are building for a FreeBSD target
-GCC_TARGET?=	${PKGNAMEPREFIX}unknown-${OPSYS:tl}${OSREL}
-BU_PREFIX?=	${PKGNAMEPREFIX}unknown-${OPSYS:tl}${OSREL}
+GCC_TARGET?=	${PKGNAMEPREFIX}unknown-${OPSYS:tl}${OSREL}${PKGNAMESUFFIX}
+BU_PREFIX?=	${PKGNAMEPREFIX}unknown-${OPSYS:tl}${OSREL}${PKGNAMESUFFIX}
 EXTRA_PATCHES+= ${FILESDIR}/freebsd-format-extensions
 .else
 BU_PREFIX?=	${GCC_TARGET}
@@ -41,7 +41,7 @@ TARGETARCH=${PKGNAMEPREFIX:C/-//g}
 
 GNU_CONFIGURE=	yes
 CONFIGURE_OUTSOURCE=	yes
-CONFIGURE_ARGS+=--target=${GCC_TARGET} --disable-nls --enable-languages=c,c++ \
+CONFIGURE_ARGS+=--target=${GCC_TARGET} --disable-nls --enable-languages=c,c++,lto \
 		--enable-gnu-indirect-function \
 		--without-headers \
 		--with-gmp=${LOCALBASE} \
