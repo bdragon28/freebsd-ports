@@ -61,8 +61,14 @@ PLIST_SUB+=	MIPS="@comment "
 .endif
 .if ${ARCH:Mpowerpc*}
 PLIST_SUB+=	POWERPC=""
+. if ${ARCH:Mpowerpcspe*}
+PLIST_SUB+=	POWERPC64="@comment "
+. else
+PLIST_SUB+=	POWERPC64=""
+. endif
 .else
 PLIST_SUB+=	POWERPC="@comment "
+PLIST_SUB+=	POWERPC64="@comment "
 .endif
 .if ${ARCH:Msparc*}
 PLIST_SUB+=	SPARC=""
