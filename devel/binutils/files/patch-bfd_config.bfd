@@ -1,0 +1,34 @@
+--- bfd/config.bfd.orig	2018-01-13 07:31:15.000000000 -0600
++++ bfd/config.bfd	2019-01-10 19:29:43.026955000 -0600
+@@ -1206,15 +1206,15 @@ case "${targ}" in
+     ;;
+   mips64*el-*-freebsd* | mips64*el-*-kfreebsd*-gnu)
+     # FreeBSD vectors
+-    targ_defvec=mips_elf32_ntradfbsd_le_vec
+-    targ_selvecs="mips_elf32_ntradfbsd_be_vec mips_elf32_tradfbsd_le_vec mips_elf32_tradfbsd_be_vec mips_elf64_tradfbsd_le_vec mips_elf64_tradfbsd_be_vec"
++    targ_defvec=mips_elf64_tradfbsd_le_vec
++    targ_selvecs="mips_elf64_tradfbsd_le_vec mips_elf32_ntradfbsd_le_vec mips_elf32_ntradfbsd_be_vec mips_elf32_tradfbsd_le_vec mips_elf32_tradfbsd_be_vec mips_elf64_tradfbsd_be_vec"
+     # Generic vectors
+     targ_selvecs="${targ_selvecs} mips_elf32_ntrad_le_vec mips_elf32_ntrad_be_vec mips_elf32_trad_le_vec mips_elf32_trad_be_vec mips_elf64_trad_le_vec mips_elf64_trad_be_vec"
+     ;;
+   mips64*-*-freebsd* | mips64*-*-kfreebsd*-gnu)
+     # FreeBSD vectors
+-    targ_defvec=mips_elf32_ntradfbsd_be_vec
+-    targ_selvecs="mips_elf32_ntradfbsd_le_vec mips_elf32_tradfbsd_be_vec mips_elf32_tradfbsd_le_vec mips_elf64_tradfbsd_be_vec mips_elf64_tradfbsd_le_vec"
++    targ_defvec=mips_elf64_tradfbsd_be_vec
++    targ_selvecs="mips_elf64_tradfbsd_be_vec mips_elf32_ntradfbsd_be_vec mips_elf32_ntradfbsd_le_vec mips_elf32_tradfbsd_be_vec mips_elf32_tradfbsd_le_vec mips_elf64_tradfbsd_le_vec"
+     # Generic vectors
+     targ_selvecs="${targ_selvecs} mips_elf32_ntrad_be_vec mips_elf32_ntrad_le_vec mips_elf32_trad_be_vec mips_elf32_trad_le_vec mips_elf64_trad_be_vec mips_elf64_trad_le_vec"
+     ;;
+@@ -1389,6 +1389,11 @@ case "${targ}" in
+     targ_defvec=powerpc_elf32_fbsd_vec
+     targ_selvecs="rs6000_xcoff_vec powerpc_elf32_vec powerpc_elf32_le_vec powerpc_boot_vec"
+     targ64_selvecs="powerpc_elf64_vec powerpc_elf64_le_vec powerpc_elf64_fbsd_vec"
++    ;;
++  powerpcspe-*-*freebsd*)
++    targ_defvec=powerpc_elf32_fbsd_vec
++    targ_selvecs="rs6000_xcoff_vec powerpc_elf32_vec powerpc_boot_vec"
++    want64=false
+     ;;
+   powerpc-*-*bsd* | powerpc-*-elf* | powerpc-*-sysv4* | powerpc-*-eabi* | \
+   powerpc-*-solaris2* | powerpc-*-linux-* | powerpc-*-rtems* | \
