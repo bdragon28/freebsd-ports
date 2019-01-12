@@ -12,7 +12,7 @@ PLIST=		${.CURDIR}/pkg-plist
 
 .if defined(CROSS_TOOLCHAIN) && !defined(CROSS_SYSROOT)
 .error Please define CROSS_SYSROOT before building
-.elseif !defined(CROSS_TOOLCHAIN)
+.elif !defined(CROSS_TOOLCHAIN)
 CROSS_SYSROOT?=	/
 # We are doing a true native build.
 # Since some of our tools are not prefixed, override autodetection.

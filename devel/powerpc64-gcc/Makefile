@@ -29,7 +29,7 @@ TARGETARCH=	${PKGNAMEPREFIX:C/-//g}
 
 .if empty(GCC_TARGET)
 # We are building for a FreeBSD target
-GCC_TARGET=	${PKGNAMEPREFIX:S/amd64/x86_64/}unknown-${OPSYS:tl}${OSREL}${PKGNAMESUFFIX}
+GCC_TARGET=	${PKGNAMEPREFIX:S/amd64/x86_64/:S/powerpcspe/e500v2/}unknown-${OPSYS:tl}${OSREL}${PKGNAMESUFFIX}
 EXTRA_PATCHES+= ${FILESDIR}/freebsd-format-extensions \
 		${FILESDIR}/freebsd-libdir
 .endif
@@ -66,6 +66,8 @@ post-patch:
 
 .if ${ARCH} == "amd64"
 CONFIGURE_TARGET=	x86_64-unknown-${OPSYS:tl}${OSREL}
+.elseif ${ARCH} == "powerpcspe"
+CONFIGURE_TARGET=	e500v2-unknown-${OPSYS:tl}${OSREL}
 .else
 CONFIGURE_TARGET=	${ARCH}-unknown-${OPSYS:tl}${OSREL}
 .endif
@@ -105,6 +107,7 @@ post-install:
 .if empty(PKGNAMEPREFIX:M*-*-)
 	@${RM} -r ${STAGEDIR}${PREFIX}/lib/gcc/${GCC_TARGET}/${PORTVERSION}/include-fixed
 .endif
+# @bug ${TARGETARCH} == "amd64" is impossible.
 .if ${TARGETARCH} == "amd64" || ${TARGETARCH} == "i386"
 	# Conflicts with sys/x86/include/float.h
 	${RM} ${STAGEDIR}${PREFIX}/lib/gcc/${GCC_TARGET}/${PORTVERSION}/include/float.h
