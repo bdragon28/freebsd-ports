@@ -1,18 +1,17 @@
-# $FreeBSD$
+# $FreeBSD: head/base/gcc/Makefile 475401 2018-07-26 22:25:19Z jhb $
 
 PORTNAME=	gcc
-PORTVERSION=	6.4.0
+PORTVERSION=	8.2.0
 PORTREVISION=	1
 CATEGORIES=	base
 MASTER_SITES=	GCC/releases/gcc-${DISTVERSION} \
-		http://www.mpfr.org/mpfr-3.1.6/:mpfr \
 		http://www.mpfr.org/mpfr-current/:mpfr \
 		GNU/gmp:gmp \
 		https://ftp.gnu.org/gnu/mpc/:mpc
 DISTFILES=	${PORTNAME}-${PORTVERSION}${EXTRACT_SUFX} \
-		mpfr-3.1.6.tar.xz:mpfr \
+		mpfr-4.0.1/mpfr-4.0.1.tar.xz:mpfr \
 		gmp-6.1.2.tar.xz:gmp \
-		mpc-1.0.3.tar.gz:mpc
+		mpc-1.1.0.tar.gz:mpc
 PKGNAMEPREFIX=	${OPSYS:tl}-
 
 MAINTAINER=	bapt@FreeBSD.org
@@ -44,7 +43,15 @@ PLIST_SUB=	TARGETARCH=${TARGETARCH} \
 		GCC_VERSION=${PORTVERSION}
 
 EXTRA_PATCHES+= ${.CURDIR}/../../devel/powerpc64-gcc/files/freebsd-format-extensions
+EXTRA_PATCHES+= ${.CURDIR}/../../devel/powerpc64-gcc/files/patch-fuse-ld=lld
 EXTRA_PATCHES+= ${.CURDIR}/../../devel/powerpc64-gcc/files/patch-gcc-freebsd-mips
+EXTRA_PATCHES+= ${.CURDIR}/../../devel/powerpc64-gcc/files/patch-gets-no-more
+EXTRA_PATCHES+= ${.CURDIR}/../../devel/powerpc64-gcc/files/patch-spe-config
+
+MPFR_PATCHLEVEL=	13
+MPFR_PATCHFILES!=	/usr/bin/jot -s " " -w mpfr-4.0.1/patch%02d ${MPFR_PATCHLEVEL} 1 ${MPFR_PATCHLEVEL}
+
+PATCHFILES+= ${MPFR_PATCHFILES}
 
 GNU_CONFIGURE=	yes
 CONFIGURE_OUTSOURCE=	yes
@@ -85,15 +92,38 @@ PLIST_SUB+=	MIPS=""
 PLIST_SUB+=	MIPS="@comment "
 .endif
 .if ${ARCH:Mpowerpc*}
-PLIST_SUB+=	POWERPC=""
+PLIST_SUB+=     POWERPC=""
+. if ${ARCH:Mpowerpcspe*}
+#TODO: move this into the target definition
+CONFIGURE_ARGS+=        --with-cpu=8548 --enable-e500_double --without-fp --enable-obsolete
+PLIST_SUB+=     POWERPC64="@comment "
+PLIST_SUB+=	POWERPC_NON_SPE="@comment "
+PLIST_SUB+=	POWERPCSPE=""
+. else
+PLIST_SUB+=     POWERPC64=""
+PLIST_SUB+=	POWERPC_NON_SPE=""
+PLIST_SUB+=	POWERPCSPE="@comment "
+. endif
 .else
-PLIST_SUB+=	POWERPC="@comment "
+PLIST_SUB+=     POWERPC="@comment "
+PLIST_SUB+=     POWERPC64="@comment "
+PLIST_SUB+=	POWERPC_NON_SPE="@comment "
+PLIST_SUB+=	POWERPCSPE="@comment "
 .endif
 
+.if ${ARCH:Mpowerpc64*}
+#POWER9BSD HACK
+# TODO: Fix PPC64 default ABI in the target definition directly
+CONFIGURE_ARGS+=	--with-cpu=power6 --with-tune=power9 --with-abi=elfv2
+.endif
+
+# Note: the mpfr-4.0.1-b symlink is used so that mpfr patches can be
+# applied to the wrong work directory.
 post-extract:
-	cd ${WRKSRC}; ${LN} -sf ../mpfr-3.1.6 mpfr ; \
+	cd ${WRKSRC}; ${LN} -sf ../mpfr-4.0.1 mpfr ; \
+		${LN} -sf ../mpfr-4.0.1 mpfr-4.0.1-b ; \
 		${LN} -sf ../gmp-6.1.2 gmp ; \
-		${LN} -sf ../mpc-1.0.3 mpc
+		${LN} -sf ../mpc-1.1.0 mpc
 
 post-patch:
 	@${REINPLACE_CMD} -e '/LIBSTDCXX/ s/stdc\+\+/c\+\+/g ' \
