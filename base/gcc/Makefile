@@ -20,15 +20,11 @@ COMMENT=	GNU Compiler Collection
 LICENSE=	GPLv3 GPLv3RLE
 LICENSE_COMB=	multi
 
-.if !defined(CROSS_TOOLCHAIN)
-.error Please define CROSS_TOOLCHAIN before building
-.endif
-
-.if !defined(CROSS_SYSROOT)
+.if defined(CROSS_TOOLCHAIN) && !defined(CROSS_SYSROOT)
 .error Please define CROSS_SYSROOT before building
 .endif
 
-TARGETARCH=	${ARCH:S/amd64/x86_64/}
+TARGETARCH=	${ARCH:S/amd64/x86_64/:S/powerpcspe/e500v2/}
 GCC_TARGET=	${TARGETARCH}-unknown-${OPSYS:tl}${OSREL}
 
 PREFIX=		/usr
@@ -56,6 +52,7 @@ PATCHFILES+= ${MPFR_PATCHFILES}
 GNU_CONFIGURE=	yes
 CONFIGURE_OUTSOURCE=	yes
 CONFIGURE_ARGS+=	\
+		--with-sysroot=/ \
 		--target=${GCC_TARGET} \
 		--enable-languages=c,c++ \
 		--enable-gnu-indirect-function \
@@ -93,9 +90,7 @@ PLIST_SUB+=	MIPS="@comment "
 .endif
 .if ${ARCH:Mpowerpc*}
 PLIST_SUB+=     POWERPC=""
-. if ${ARCH:Mpowerpcspe*}
-#TODO: move this into the target definition
-CONFIGURE_ARGS+=        --with-cpu=8548 --enable-e500_double --without-fp --enable-obsolete
+. if ${ARCH} == "powerpcspe"
 PLIST_SUB+=     POWERPC64="@comment "
 PLIST_SUB+=	POWERPC_NON_SPE="@comment "
 PLIST_SUB+=	POWERPCSPE=""
