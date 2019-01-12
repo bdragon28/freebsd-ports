@@ -20,15 +20,3 @@
      # Generic vectors
      targ_selvecs="${targ_selvecs} mips_elf32_ntrad_be_vec mips_elf32_ntrad_le_vec mips_elf32_trad_be_vec mips_elf32_trad_le_vec mips_elf64_trad_be_vec mips_elf64_trad_le_vec"
      ;;
-@@ -1389,6 +1389,11 @@ case "${targ}" in
-     targ_defvec=powerpc_elf32_fbsd_vec
-     targ_selvecs="rs6000_xcoff_vec powerpc_elf32_vec powerpc_elf32_le_vec powerpc_boot_vec"
-     targ64_selvecs="powerpc_elf64_vec powerpc_elf64_le_vec powerpc_elf64_fbsd_vec"
-+    ;;
-+  powerpcspe-*-*freebsd*)
-+    targ_defvec=powerpc_elf32_fbsd_vec
-+    targ_selvecs="rs6000_xcoff_vec powerpc_elf32_vec powerpc_boot_vec"
-+    want64=false
-     ;;
-   powerpc-*-*bsd* | powerpc-*-elf* | powerpc-*-sysv4* | powerpc-*-eabi* | \
-   powerpc-*-solaris2* | powerpc-*-linux-* | powerpc-*-rtems* | \

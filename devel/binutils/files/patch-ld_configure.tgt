@@ -17,12 +17,3 @@
  			targ_extra_libpath=$targ_extra_emuls ;;
  mips*el-*-freebsd* | mips*el-*-kfreebsd*-gnu)
  			targ_emul=elf32ltsmip_fbsd
-@@ -599,7 +599,7 @@ pjl*-*-*)		targ_emul=pjlelf
- 			targ_extra_emuls="elf_i386 elf_iamcu" ;;
- pj*-*-*)		targ_emul=pjelf
- 			;;
--powerpc-*-freebsd* | powerpc-*-kfreebsd*-gnu)
-+powerpc-*-freebsd* | powerpcspe-*-freebsd* | powerpc-*-kfreebsd*-gnu)
- 			targ_emul=elf32ppc_fbsd
- 			targ_extra_emuls="elf32ppc elf32ppcsim"
- 			targ_extra_libpath=elf32ppc;
