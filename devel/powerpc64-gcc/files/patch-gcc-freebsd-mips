@@ -1,12 +1,10 @@
-diff --git a/gcc/config.gcc b/gcc/config.gcc
-index 90d4f71..5a05e22 100644
---- gcc/config.gcc
-+++ gcc/config.gcc
-@@ -1949,6 +1949,26 @@ microblaze*-*-elf)
- 	cxx_target_objs="${cxx_target_objs} microblaze-c.o"
- 	tmake_file="${tmake_file} microblaze/t-microblaze"
-         ;;
-+mips*-*-freebsd*)	# FreeBSD/mips[64], either endian.
+--- gcc/config.gcc.orig	2018-06-25 19:34:01.000000000 +0000
++++ gcc/config.gcc	2018-11-20 04:44:32.735385000 +0000
+@@ -2101,6 +2101,26 @@ riscv*-*-freebsd*)
+ 	# automatically detect that GAS supports it, yet we require it.
+ 	gcc_cv_initfini_array=yes
+ 	;;
++mips*-*-freebsd*)      # FreeBSD/mips[64], either endian.
 +	tm_file="${tm_file} elfos.h ${fbsd_tm_file} mips/elf.h mips/freebsd.h"
 +	target_cpu_default="MASK_ABICALLS|MASK_SOFT_FLOAT_ABI"
 +	case ${target} in
@@ -28,7 +26,7 @@ index 90d4f71..5a05e22 100644
 +	;;
  mips*-*-netbsd*)			# NetBSD/mips, either endian.
  	target_cpu_default="MASK_ABICALLS"
- 	tm_file="elfos.h ${tm_file} mips/elf.h netbsd.h netbsd-elf.h mips/netbsd.h"
+ 	tm_file="elfos.h ${tm_file} mips/elf.h ${nbsd_tm_file} mips/netbsd.h"
 diff --git a/gcc/config/elfos.h b/gcc/config/elfos.h
 index c1d5553..5d882e3 100644
 --- gcc/config/elfos.h
