@@ -14,8 +14,10 @@ COMMENT=	Pre seeded toolchain to cross build FreeBSD base
 
 NO_BUILD=	yes
 
-.if ${PKGNAMEPREFIX} == "amd64-"
+.if "${PKGNAMEPREFIX}" == "amd64-"
 TOOLCHAIN_PREFIX=	x86_64-
+.elif ${PKGNAMEPREFIX} == "powerpcspe-"
+TOOLCHAIN_PREFIX=	e500v2-
 .else
 TOOLCHAIN_PREFIX=	${PKGNAMEPREFIX}
 .endif
@@ -32,6 +34,7 @@ SUB_FILES=	xtoolchain.mk
 SUB_LIST=	TARGETARCH=${TOOLCHAIN_PREFIX:C/-//g} \
 		OPSYS=${OPSYS:tl} \
 		OSREL=${OSREL} \
+		BUTARGET=${BUTARGET} \
 		XCC=${XCC} \
 		XCXX=${XCXX} \
 		XCPP=${XCPP} \
