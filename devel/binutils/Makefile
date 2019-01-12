@@ -16,7 +16,7 @@ LICENSE_COMB=	multi
 
 EXTRA_PATCHES=	${FILESDIR}/fix-aarch64.diff:-p1
 
-.if !defined(CROSS_TOOLCHAIN)
+.if !defined(BINUTILS_BUILDING_BASE)
 BUILD_DEPENDS=	${LOCALBASE}/lib/libgmp.so:math/gmp \
 		${LOCALBASE}/lib/libmpfr.so:math/mpfr
 
@@ -48,7 +48,8 @@ PLIST_SUB=	BUTARGET=${BUTARGET}
 OPTIONS_EXCLUDE=	NLS
 INFO_PATH=	${PKGNAMEPREFIX:S/-$//}/share/info
 CONFIGURE_ARGS+=	--disable-shared \
-			--target=${BUTARGET}
+			--target=${BUTARGET} \
+			--enable-64-bit-bfd
 .else
 BUREMOVE=	coffdump \
 		dlltool \
@@ -101,7 +102,7 @@ PLIST_SUB+=	GOLD="@comment "
 .if ${ARCH} == "amd64"
 CONFIGURE_TARGET=	x86_64-portbld-freebsd${OSREL}
 .elif ${ARCH} == "powerpcspe"
-CONFIGURE_TARGET=	powerpc-portbld-freebsd${OSREL}
+CONFIGURE_TARGET=	e500v2-portbld-freebsd${OSREL}
 .else
 CONFIGURE_TARGET=	${ARCH}-portbld-freebsd${OSREL}
 .endif
@@ -123,27 +124,30 @@ post-install:
 	${RM} ${STAGEDIR}${PREFIX}/${BUTARGET}/lib/ldscripts/i386bsd.*
 	@if [ -d ${STAGEDIR}${PREFIX}/${INFO_PATH:H} ] ; then rm -rf ${STAGEDIR}${PREFIX}/${INFO_PATH:H}; fi
 	${LN} -fs ../../bin/${BUTARGET}-size ${STAGEDIR}${PREFIX}/${BUTARGET}/bin/size
-.if defined(CROSS_TOOLCHAIN)
+.if defined(BINUTILS_BUILDING_BASE)
+. if !defined(CROSS_TOOLCHAIN)
+# When doing a native build, the target prefix is dropped from tools.
 	${MV} ${STAGEDIR}/usr/bin/as ${STAGEDIR}/usr/bin/${BUTARGET}-as
-	${LN} -fs /usr/bin/${BUTARGET}-as ${STAGEDIR}/usr/bin/as
 	${MV} ${STAGEDIR}/usr/bin/ld ${STAGEDIR}/usr/bin/${BUTARGET}-ld
-	${LN} -fs /usr/bin/${BUTARGET}-ld ${STAGEDIR}/usr/bin/ld
 	${MV} ${STAGEDIR}/usr/bin/ld.bfd ${STAGEDIR}/usr/bin/${BUTARGET}-ld.bfd
-	${LN} -fs /usr/bin/${BUTARGET}-ld.bfd ${STAGEDIR}/usr/bin/ld.bfd
 	${MV} ${STAGEDIR}/usr/bin/objcopy ${STAGEDIR}/usr/bin/${BUTARGET}-objcopy
-	${LN} -fs /usr/bin/${BUTARGET}-objcopy ${STAGEDIR}/usr/bin/objcopy
 	${MV} ${STAGEDIR}/usr/bin/objdump ${STAGEDIR}/usr/bin/${BUTARGET}-objdump
-	${LN} -fs /usr/bin/${BUTARGET}-objdump ${STAGEDIR}/usr/bin/objdump
 	${MV} ${STAGEDIR}/${MANDIR}1/as.1 ${STAGEDIR}/${MANDIR}1/${BUTARGET}-as.1
+	${MV} ${STAGEDIR}/${MANDIR}1/ld.1 ${STAGEDIR}/${MANDIR}1/${BUTARGET}-ld.1
+	${MV} ${STAGEDIR}/${MANDIR}1/objcopy.1 ${STAGEDIR}/${MANDIR}1/${BUTARGET}-objcopy.1
+	${MV} ${STAGEDIR}/${MANDIR}1/objdump.1 ${STAGEDIR}/${MANDIR}1/${BUTARGET}-objdump.1
+. endif
+	${LN} -fs /usr/bin/${BUTARGET}-as ${STAGEDIR}/usr/bin/as
+	${LN} -fs /usr/bin/${BUTARGET}-ld ${STAGEDIR}/usr/bin/ld
+	${LN} -fs /usr/bin/${BUTARGET}-ld.bfd ${STAGEDIR}/usr/bin/ld.bfd
+	${LN} -fs /usr/bin/${BUTARGET}-objcopy ${STAGEDIR}/usr/bin/objcopy
+	${LN} -fs /usr/bin/${BUTARGET}-objdump ${STAGEDIR}/usr/bin/objdump
 	${GZIP_CMD} ${STAGEDIR}/${MANDIR}1/${BUTARGET}-as.1
 	${LN} -fs ${BUTARGET}-as.1.gz ${STAGEDIR}/${MANDIR}1/as.1.gz
-	${MV} ${STAGEDIR}/${MANDIR}1/ld.1 ${STAGEDIR}/${MANDIR}1/${BUTARGET}-ld.1
 	${GZIP_CMD} ${STAGEDIR}/${MANDIR}1/${BUTARGET}-ld.1
 	${LN} -fs ${BUTARGET}-ld.1.gz ${STAGEDIR}/${MANDIR}1/ld.1.gz
-	${MV} ${STAGEDIR}/${MANDIR}1/objcopy.1 ${STAGEDIR}/${MANDIR}1/${BUTARGET}-objcopy.1
 	${GZIP_CMD} ${STAGEDIR}/${MANDIR}1/${BUTARGET}-objcopy.1
 	${LN} -fs ${BUTARGET}-objcopy.1.gz ${STAGEDIR}/${MANDIR}1/objcopy.1.gz
-	${MV} ${STAGEDIR}/${MANDIR}1/objdump.1 ${STAGEDIR}/${MANDIR}1/${BUTARGET}-objdump.1
 	${GZIP_CMD} ${STAGEDIR}/${MANDIR}1/${BUTARGET}-objdump.1
 	${LN} -fs ${BUTARGET}-objdump.1.gz ${STAGEDIR}/${MANDIR}1/objdump.1.gz
 	@${RM} -r ${STAGEDIR}${PREFIX}/include

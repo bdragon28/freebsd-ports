@@ -10,18 +10,28 @@ COMMENT=	GNU binary tools for base
 MASTERDIR=	${.CURDIR}/../../devel/binutils
 PLIST=		${.CURDIR}/pkg-plist
 
-.if !defined(CROSS_TOOLCHAIN)
-.error Please define CROSS_TOOLCHAIN before building
-.endif
-
-.if !defined(CROSS_SYSROOT)
+.if defined(CROSS_TOOLCHAIN) && !defined(CROSS_SYSROOT)
 .error Please define CROSS_SYSROOT before building
+.elseif !defined(CROSS_TOOLCHAIN)
+CROSS_SYSROOT?=	/
+# We are doing a true native build.
+# Since some of our tools are not prefixed, override autodetection.
+AR?=		/usr/bin/ar
+NM?=		/usr/bin/nm
+STRIPBIN?=	/usr/bin/strip
+CONFIGURE_ENV+=	AR=${AR} \
+		NM=${NM} \
+		CC_FOR_BUILD=${CC} \
+		STRIPBIN=${STRIPBIN}
 .endif
 
-TARGETARCH=	${ARCH:S/amd64/x86_64/}
+TARGETARCH=	${ARCH:S/amd64/x86_64/:S/powerpcspe/e500v2/}
 BUTARGET=	${TARGETARCH}-unknown-${OPSYS:tl}${OSREL}
 
 CONFIGURE_ARGS+=	--disable-host-shared
+
+BINUTILS_BUILDING_BASE=
+
 PREFIX=	/usr
 BUREMOVE=	addr2line \
 		ar \
