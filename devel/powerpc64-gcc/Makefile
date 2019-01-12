@@ -1,8 +1,8 @@
-# $FreeBSD$
+# $FreeBSD: head/devel/powerpc64-gcc/Makefile 488642 2018-12-29 00:44:12Z jhb $
 
 PORTNAME=	gcc
-PORTVERSION=	6.4.0
-PORTREVISION=	3
+PORTVERSION=	8.2.0
+PORTREVISION=	0
 CATEGORIES=	devel
 MASTER_SITES=	GCC/releases/gcc-${DISTVERSION}
 PKGNAMEPREFIX?=	powerpc64-
@@ -29,14 +29,14 @@ TARGETARCH=	${PKGNAMEPREFIX:C/-//g:S/amd64/x86_64/}
 
 .if empty(GCC_TARGET)
 # We are building for a FreeBSD target
-GCC_TARGET=	${PKGNAMEPREFIX:S/amd64/x86_64/}unknown-${OPSYS:tl}${OSREL}
+GCC_TARGET=	${PKGNAMEPREFIX:S/amd64/x86_64/}unknown-${OPSYS:tl}${OSREL}${PKGNAMESUFFIX}
 EXTRA_PATCHES+= ${FILESDIR}/freebsd-format-extensions
 .endif
 BU_PREFIX?=	${GCC_TARGET}
 
 GNU_CONFIGURE=	yes
 CONFIGURE_OUTSOURCE=	yes
-CONFIGURE_ARGS+=--target=${GCC_TARGET} --disable-nls --enable-languages=c,c++ \
+CONFIGURE_ARGS+=--target=${GCC_TARGET} --disable-nls --enable-languages=c,c++,lto \
 		--enable-gnu-indirect-function \
 		--without-headers \
 		--with-gmp=${LOCALBASE} \
