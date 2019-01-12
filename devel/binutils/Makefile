@@ -46,7 +46,8 @@ PLIST_SUB=	BUTARGET=${BUTARGET}
 OPTIONS_EXCLUDE=	NLS
 INFO_PATH=	${PKGNAMEPREFIX:S/-$//}/share/info
 CONFIGURE_ARGS+=	--disable-shared \
-			--target=${BUTARGET}
+			--target=${BUTARGET} \
+			--enable-64-bit-bfd
 .else
 BUREMOVE=	coffdump \
 		dlltool \
@@ -100,7 +101,7 @@ PLIST_SUB+=	GOLD="@comment "
 .if ${ARCH} == "amd64"
 CONFIGURE_TARGET=	x86_64-portbld-freebsd${OSREL}
 .elif ${ARCH} == "powerpcspe"
-CONFIGURE_TARGET=	powerpc-portbld-freebsd${OSREL}
+CONFIGURE_TARGET=	e500v2-portbld-freebsd${OSREL}
 .else
 CONFIGURE_TARGET=	${ARCH}-portbld-freebsd${OSREL}
 .endif
