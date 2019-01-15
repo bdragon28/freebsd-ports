@@ -190,8 +190,8 @@ lib/gcc/%%GCC_TARGET%%/%%GCC_VERSION%%/plugin/include/config/initfini-array.h
 %%POWERPCSPE%%lib/gcc/%%GCC_TARGET%%/%%GCC_VERSION%%/plugin/include/config/%%TARGETARCH%%/%%TARGETARCH%%-opts.h
 %%POWERPCSPE%%lib/gcc/%%GCC_TARGET%%/%%GCC_VERSION%%/plugin/include/config/%%TARGETARCH%%/%%TARGETARCH%%-protos.h
 %%POWERPCSPE%%lib/gcc/%%GCC_TARGET%%/%%GCC_VERSION%%/plugin/include/config/%%TARGETARCH%%/%%TARGETARCH%%.h
-%%POWERPC_NON_SPE%%lib/gcc/%%GCC_TARGET%%/%%GCC_VERSION%%/plugin/include/config/rs6000/default64.h
-%%POWERPC_NON_SPE%%lib/gcc/%%GCC_TARGET%%/%%GCC_VERSION%%/plugin/include/config/rs6000/%%OPSYS%%64.h
+%%POWERPC64%%lib/gcc/%%GCC_TARGET%%/%%GCC_VERSION%%/plugin/include/config/rs6000/default64.h
+%%POWERPC64%%lib/gcc/%%GCC_TARGET%%/%%GCC_VERSION%%/plugin/include/config/rs6000/%%OPSYS%%64.h
 %%POWERPC_NON_SPE%%lib/gcc/%%GCC_TARGET%%/%%GCC_VERSION%%/plugin/include/config/rs6000/option-defaults.h
 %%POWERPC_NON_SPE%%lib/gcc/%%GCC_TARGET%%/%%GCC_VERSION%%/plugin/include/config/rs6000/rs6000-builtin.def
 %%POWERPC_NON_SPE%%lib/gcc/%%GCC_TARGET%%/%%GCC_VERSION%%/plugin/include/config/rs6000/rs6000-cpus.def
