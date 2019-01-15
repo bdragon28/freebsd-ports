@@ -54,6 +54,7 @@ GNU_CONFIGURE=	yes
 CONFIGURE_OUTSOURCE=	yes
 CONFIGURE_ARGS+=	\
 		--with-sysroot=/ \
+		--host=${GCC_TARGET} \
 		--target=${GCC_TARGET} \
 		--enable-languages=c,c++ \
 		--enable-gnu-indirect-function \
@@ -134,15 +135,11 @@ post-patch:
 		${WRKSRC}//gcc/Makefile.in
 
 post-install:
-.if defined(CROSS_TOOLCHAIN)
 	${MV} -f ${STAGEDIR}/usr/bin/gcov-tool ${STAGEDIR}/usr/bin/${GCC_TARGET}-gcov-tool ; \
 	for tool in cpp gcc g++ gcov; do \
 		${MV} -f ${STAGEDIR}/usr/bin/$${tool} ${STAGEDIR}/usr/bin/${GCC_TARGET}-$${tool} ; \
-		${MV} -f ${STAGEDIR}/${MANDIR}1/$${tool}.1 ${STAGEDIR}/${MANDIR}1/${GCC_TARGET}-$${tool}.1 ; \
-	done
-.endif
-	for tool in cpp gcc g++ gcov; do \
 		${LN} -sf ${GCC_TARGET}-$${tool}  ${STAGEDIR}/usr/bin/$${tool} ; \
+		${MV} -f ${STAGEDIR}/${MANDIR}1/$${tool}.1 ${STAGEDIR}/${MANDIR}1/${GCC_TARGET}-$${tool}.1 ; \
 		${GZIP_CMD} ${STAGEDIR}/${MANDIR}1/${GCC_TARGET}-$${tool}.1 ; \
 		${LN} -sf ${GCC_TARGET}-$${tool}.1.gz ${STAGEDIR}/${MANDIR}1/$${tool}.1.gz ; \
 	done ; \
