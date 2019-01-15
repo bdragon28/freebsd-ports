@@ -28,7 +28,8 @@ CONFIGURE_ENV+=	AR=${AR} \
 TARGETARCH=	${ARCH:S/amd64/x86_64/:S/powerpcspe/e500v2/}
 BUTARGET=	${TARGETARCH}-unknown-${OPSYS:tl}${OSREL}
 
-CONFIGURE_ARGS+=	--disable-host-shared
+CONFIGURE_ARGS+=	--disable-host-shared \
+			--host=${BUTARGET}
 
 BINUTILS_BUILDING_BASE=
 
