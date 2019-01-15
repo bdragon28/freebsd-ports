@@ -124,6 +124,7 @@ post-install:
 	@if [ -d ${STAGEDIR}${PREFIX}/${INFO_PATH:H} ] ; then rm -rf ${STAGEDIR}${PREFIX}/${INFO_PATH:H}; fi
 	${LN} -fs ../../bin/${BUTARGET}-size ${STAGEDIR}${PREFIX}/${BUTARGET}/bin/size
 .if ${PREFIX} == "/usr"
+# When HOST==TARGET, the target prefix is dropped from tools.
 .if defined(CROSS_TOOLCHAIN)
 	${MV} ${STAGEDIR}/usr/bin/as ${STAGEDIR}/usr/bin/${BUTARGET}-as
 	${MV} ${STAGEDIR}/usr/bin/ld ${STAGEDIR}/usr/bin/${BUTARGET}-ld
