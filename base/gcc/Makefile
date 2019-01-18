@@ -119,9 +119,7 @@ PLIST_SUB+=	POWERPCSPE="@comment "
 .endif
 
 .if ${ARCH:Mpowerpc64*}
-#POWER9BSD HACK
-# TODO: Fix PPC64 default ABI in the target definition directly
-CONFIGURE_ARGS+=	--with-cpu=power6 --with-tune=power9 --with-abi=elfv2
+CONFIGURE_ARGS+=	--with-cpu=powerpc64 --with-tune=power9 --with-abi=elfv2
 .endif
 
 # Note: the mpfr-4.0.1-b symlink is used so that mpfr patches can be
