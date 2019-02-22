@@ -46,8 +46,7 @@ PLIST_SUB=	BUTARGET=${BUTARGET}
 OPTIONS_EXCLUDE=	NLS
 INFO_PATH=	${PKGNAMEPREFIX:S/-$//}/share/info
 CONFIGURE_ARGS+=	--disable-shared \
-			--target=${BUTARGET} \
-			--enable-64-bit-bfd
+			--target=${BUTARGET}
 .else
 BUREMOVE=	coffdump \
 		dlltool \
@@ -57,13 +56,6 @@ BUREMOVE=	coffdump \
 		sysdump \
 		windmc \
 		windres
-
-BUTOOLS=	as \
-		ld \
-		ld.bfd \
-		objcopy \
-		objdump
-
 CFLAGS+=	-I${LOCALBASE}/include
 LDFLAGS+=	-L${LOCALBASE}/lib
 CONFIGURE_ARGS+=	--with-system-zlib \
@@ -108,7 +100,7 @@ PLIST_SUB+=	GOLD="@comment "
 .if ${ARCH} == "amd64"
 CONFIGURE_TARGET=	x86_64-portbld-freebsd${OSREL}
 .elif ${ARCH} == "powerpcspe"
-CONFIGURE_TARGET=	e500v2-portbld-freebsd${OSREL}
+CONFIGURE_TARGET=	powerpc-portbld-freebsd${OSREL}
 .else
 CONFIGURE_TARGET=	${ARCH}-portbld-freebsd${OSREL}
 .endif
@@ -130,38 +122,22 @@ post-install:
 	${RM} ${STAGEDIR}${PREFIX}/${BUTARGET}/lib/ldscripts/i386bsd.*
 	@if [ -d ${STAGEDIR}${PREFIX}/${INFO_PATH:H} ] ; then rm -rf ${STAGEDIR}${PREFIX}/${INFO_PATH:H}; fi
 	${LN} -fs ../../bin/${BUTARGET}-size ${STAGEDIR}${PREFIX}/${BUTARGET}/bin/size
-
-# If we're building base/binutils, use a different structure.
 .if ${PREFIX} == "/usr"
-
-. for tool in ${BUTOOLS}
-	# Ensure :q
-Ensure the Standardize on prefixed tool names
-	@if [ -f ${STAGEDIR}${PREFIX}/bin/${tool} ] 
-	then
-		${MV} ${STAGEDIR}${PREFIX}/bin/${tool} ${STAGEDIR}${PREFIX}/bin/${BUTARGET}-${tool}
-	fi
-	@if [ -f ${STAGEDIR}${MANDIR}1/${tool}.1 ]
-	then
-		${MV} ${STAGEDIR}${MANDIR}1/${tool}.1 ${STAGEDIR}${MANDIR}1/${BUTARGET}-${tool}.1
-	fi
-.if defined(BU_NATIVE_BUILD) || de
-	# When HOST==TARGET, the target prefix is dropped from tools.
+.if defined(CROSS_TOOLCHAIN)
 	${MV} ${STAGEDIR}/usr/bin/as ${STAGEDIR}/usr/bin/${BUTARGET}-as
 	${MV} ${STAGEDIR}/usr/bin/ld ${STAGEDIR}/usr/bin/${BUTARGET}-ld
 	${MV} ${STAGEDIR}/usr/bin/ld.bfd ${STAGEDIR}/usr/bin/${BUTARGET}-ld.bfd
 	${MV} ${STAGEDIR}/usr/bin/objcopy ${STAGEDIR}/usr/bin/${BUTARGET}-objcopy
 	${MV} ${STAGEDIR}/usr/bin/objdump ${STAGEDIR}/usr/bin/${BUTARGET}-objdump
-.endif
 	${MV} ${STAGEDIR}/${MANDIR}1/as.1 ${STAGEDIR}/${MANDIR}1/${BUTARGET}-as.1
-	${MV} ${STAGEDIR}/${MANDIR}1/ld.1 ${STAGEDIR}/${MANDIR}1/${BUTARGET}-ld.1
-	${MV} ${STAGEDIR}/${MANDIR}1/objcopy.1 ${STAGEDIR}/${MANDIR}1/${BUTARGET}-objcopy.1
-	${MV} ${STAGEDIR}/${MANDIR}1/objdump.1 ${STAGEDIR}/${MANDIR}1/${BUTARGET}-objdump.1
 	${GZIP_CMD} ${STAGEDIR}/${MANDIR}1/${BUTARGET}-as.1
+	${MV} ${STAGEDIR}/${MANDIR}1/ld.1 ${STAGEDIR}/${MANDIR}1/${BUTARGET}-ld.1
 	${GZIP_CMD} ${STAGEDIR}/${MANDIR}1/${BUTARGET}-ld.1
+	${MV} ${STAGEDIR}/${MANDIR}1/objcopy.1 ${STAGEDIR}/${MANDIR}1/${BUTARGET}-objcopy.1
 	${GZIP_CMD} ${STAGEDIR}/${MANDIR}1/${BUTARGET}-objcopy.1
+	${MV} ${STAGEDIR}/${MANDIR}1/objdump.1 ${STAGEDIR}/${MANDIR}1/${BUTARGET}-objdump.1
 	${GZIP_CMD} ${STAGEDIR}/${MANDIR}1/${BUTARGET}-objdump.1
-
+.endif
 	${LN} -fs /usr/bin/${BUTARGET}-as ${STAGEDIR}/usr/bin/as
 	${LN} -fs /usr/bin/${BUTARGET}-ld ${STAGEDIR}/usr/bin/ld
 	${LN} -fs /usr/bin/${BUTARGET}-ld.bfd ${STAGEDIR}/usr/bin/ld.bfd
