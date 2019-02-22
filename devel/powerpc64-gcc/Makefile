@@ -16,8 +16,8 @@ LICENSE_COMB=	multi
 LIB_DEPENDS=	libgmp.so:math/gmp \
 		libmpfr.so:math/mpfr \
 		libmpc.so:math/mpc
-BUILD_DEPENDS=	${BU_PREFIX}-as:devel/${PKGNAMEPREFIX}binutils
-RUN_DEPENDS=	${BU_PREFIX}-as:devel/${PKGNAMEPREFIX}binutils
+BUILD_DEPENDS=	${BU_PREFIX}-as:devel/${BU_PKGNAMEPREFIX:U${PKGNAMEPREFIX}}binutils
+RUN_DEPENDS=	${BU_PREFIX}-as:devel/${BU_PKGNAMEPREFIX:U${PKGNAMEPREFIX}}binutils
 
 USES=	gmake iconv libtool tar:xz makeinfo compiler:c++11-lang
 PLIST_SUB=	TARGETARCH=${PKGNAMEPREFIX:C/-//g} \
