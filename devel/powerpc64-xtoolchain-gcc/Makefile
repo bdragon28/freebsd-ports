@@ -16,8 +16,6 @@ NO_BUILD=	yes
 
 .if "${PKGNAMEPREFIX}" == "amd64-"
 TOOLCHAIN_PREFIX=	x86_64-
-.elif ${PKGNAMEPREFIX} == "powerpcspe-"
-TOOLCHAIN_PREFIX=	e500v2-
 .else
 TOOLCHAIN_PREFIX=	${PKGNAMEPREFIX}
 .endif
