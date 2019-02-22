@@ -29,7 +29,7 @@ TARGETARCH=	${PKGNAMEPREFIX:C/-//g}
 
 .if empty(GCC_TARGET)
 # We are building for a FreeBSD target
-GCC_TARGET=	${PKGNAMEPREFIX:S/amd64/x86_64/:S/powerpcspe/e500v2/}unknown-${OPSYS:tl}${OSREL}${PKGNAMESUFFIX}
+GCC_TARGET=	${PKGNAMEPREFIX:S/amd64/x86_64/}unknown-${OPSYS:tl}${OSREL}${PKGNAMESUFFIX}
 EXTRA_PATCHES+= ${FILESDIR}/freebsd-format-extensions \
 		${FILESDIR}/freebsd-libdir
 .endif
@@ -67,8 +67,6 @@ post-patch:
 
 .if ${ARCH} == "amd64"
 CONFIGURE_TARGET=	x86_64-unknown-${OPSYS:tl}${OSREL}
-.elseif ${ARCH} == "powerpcspe"
-CONFIGURE_TARGET=	e500v2-unknown-${OPSYS:tl}${OSREL}
 .else
 CONFIGURE_TARGET=	${ARCH}-unknown-${OPSYS:tl}${OSREL}
 .endif
